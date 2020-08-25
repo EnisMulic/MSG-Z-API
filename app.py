@@ -1,35 +1,20 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy 
-from flask_marshmallow import Marshmallow 
-from flask_restful import reqparse, Api, Resource 
-import os
+from flask import Blueprint
+from flask_restful import Api
+
+from resources.cog import CogResource
 
 
-from routes.cog import CogList
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
 
-app = Flask(__name__)
+# Route
+api.add_resource(CogResource, '/cog')
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'db.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-
-# db = SQLAlchemy(app)
-ma = Marshmallow(app)
-api = Api(app)
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
-api.add_resource(CogList, '/cog')
 
 
 # Run Server
 if __name__ == '__main__':
-    from database import db
+    from imports import db
 
     db.init_app(app)
     app.run(debug=True)

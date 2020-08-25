@@ -1,10 +1,14 @@
+from flask import request, jsonify
+from flask_restful import Resource
+from models.cog import Cog, CogSchema
 
-from models import cog_schema, cogs_schema
-from flask_restful import Resource, reqparse
+cogs_schema = CogSchema(many = True)
+cog_schema = CogSchema()
 
-class CogList(Resource):
+
+class CogResource(Resource):
     def get(self):
-        all_cogs = cog.query.all()
+        all_cogs = Cog.query.all()
         result = cogs_schema.dump(all_cogs)
         return jsonify(result) 
 
