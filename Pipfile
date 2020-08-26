@@ -10,9 +10,9 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-flask-restful = "*"
 flask-script = "*"
 flask-migrate = "*"
+flask-restx = "*"
 
 [requires]
 python_version = "3.8"

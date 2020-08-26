@@ -5,6 +5,8 @@ from imports import db, ma
 
 # Cog Model
 class Cog(db.Model):
+  __tablename__ = 'cogs'
+
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100), unique=True)
   description = db.Column(db.String(200))
