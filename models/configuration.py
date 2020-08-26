@@ -3,7 +3,6 @@ from marshmallow import Schema, fields, pre_load, validate
 from imports import db, ma
 
 
-# Cog Model
 class Configuration(db.Model):
   __tablename__ = 'configurations'
 
@@ -21,7 +20,6 @@ class Configuration(db.Model):
     self.cog_id = cog_id
 
 
-# Cog Schema
 class ConfigurationSchema(ma.Schema):
   id = fields.Integer(dump_only = True)
   key = fields.String(required = True)

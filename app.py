@@ -16,16 +16,6 @@ api = Api(
 api.add_namespace(cog_api)
 api.add_namespace(configuration_api)
 
-# ns = api.namespace('todos', description='TODO operations')
-# ns.add_resource(CogListResource, '/cog')
-# ns.add_resource(CogResource, '/cog/<int:id>')
-
-# Route
-# api.add_resource(CogListResource, '/cog')
-# api.add_resource(CogResource, '/cog/<int:id>')
-# api.add_resource(ConfigurationListResource, '/configuration')
-
-
 
 # Run Server
 if __name__ == '__main__':
