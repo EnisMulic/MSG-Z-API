@@ -1,5 +1,5 @@
 from flask import Flask
-from imports import db
+from database import db
 
 
 class Configuration(db.Model):
