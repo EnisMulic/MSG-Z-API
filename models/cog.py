@@ -1,6 +1,5 @@
 from flask import Flask
-from marshmallow import Schema, fields, pre_load, validate
-from imports import db, ma
+from imports import db
 
 
 class Cog(db.Model):
@@ -14,9 +13,3 @@ class Cog(db.Model):
   def __init__(self, name, description):
     self.name = name
     self.description = description
-
-
-class CogSchema(ma.Schema):
-  id = fields.Integer()
-  name = fields.String(required=True)
-  description = fields.String()

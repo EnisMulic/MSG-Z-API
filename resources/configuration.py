@@ -1,13 +1,10 @@
 from flask import request, jsonify
 from flask_restx import Resource, Namespace
-from models.configuration import Configuration, ConfigurationSchema
+from models.configuration import Configuration
 
 
 api = Namespace('configuration')
 
-
-configurations_schema = ConfigurationSchema(many = True)
-configuration_schema = ConfigurationSchema()
 
 @api.route("/")
 class ConfigurationListResource(Resource):
@@ -26,7 +23,7 @@ class ConfigurationListResource(Resource):
         db.session.add(new_cog)
         db.session.commit()
 
-        return cog_schema.jsonify(new_configuration) 
+        return cog_schema.jsonify(new_configuration)
 
 @api.route("/<int:id>")
 class ConfigurationResource(Resource):

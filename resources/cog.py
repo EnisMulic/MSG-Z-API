@@ -1,20 +1,15 @@
 from flask import request, jsonify
-from flask_restx import Resource, Namespace, marshal
-from models.cog import Cog, CogSchema, db
+from flask_restx import Resource, Namespace, marshal_with, fields
+from models.cog import Cog, db
 
 api = Namespace('cog')
-
-cogs_schema = CogSchema(many = True)
-cog_schema = CogSchema()
 
 
 @api.route('/')
 class CogListResource(Resource):
     def get(self):
         all_cogs = Cog.query.all()
-        result = cogs_schema.dump(all_cogs)
-        return result
-
+        return all_cogs
 
     def post(self):
         name = request.json['name']
@@ -25,15 +20,14 @@ class CogListResource(Resource):
         db.session.add(new_cog)
         db.session.commit()
 
-        return cog_schema.jsonify(new_cog)
+        return new_cog
 
 
 @api.route('/<int:id>')
 class CogResource(Resource):
     def get(self, id):
         cog = Cog.query.get(id)
-        result = cog_schema.dump(cog)
-        return jsonify(result) 
+        return cog
 
     def put(self, id):
         cog = Cog.query.get(id)
@@ -42,7 +36,7 @@ class CogResource(Resource):
 
         db.session.commit()
 
-        return cog_schema.jsonify(cog)
+        return cog
 
     def delete(self, id):
         cog = Cog.query.get(id)

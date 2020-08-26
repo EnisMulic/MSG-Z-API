@@ -8,8 +8,6 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
-flask-marshmallow = "*"
-marshmallow-sqlalchemy = "*"
 flask-script = "*"
 flask-migrate = "*"
 flask-restx = "*"
