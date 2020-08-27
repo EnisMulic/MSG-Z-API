@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields, marshal_with
-from models.configuration import Configuration
+from models.configuration import Configuration, db
 
 
 api = Namespace('configuration')
@@ -21,14 +21,15 @@ class ConfigurationListResource(Resource):
         return all_configurations
 
     @api.marshal_with(model)
+    @api.doc(body = model)
     def post(self):
-        configuration.key = request.json['key']
-        configuration.value = request.json['value']
-        configuration.cog_id = request.json['cog_id']
+        key = request.json['key']
+        value = request.json['value']
+        cog_id = request.json['cog_id']
 
         new_configuration = Configuration(key, value, cog_id)
 
-        db.session.add(new_cog)
+        db.session.add(new_configuration)
         db.session.commit()
 
         return new_configuration
@@ -36,11 +37,13 @@ class ConfigurationListResource(Resource):
 @api.route("/<int:id>")
 class ConfigurationResource(Resource):
     @api.marshal_with(model)
+    @api.doc(model = model)
     def get(self, id):
         configuration = Configuration.query.get(id)
         return configuration
 
     @api.marshal_with(model)
+    @api.doc(body = model)
     def put(self, id):
         configuration = Configuration.query.get(id)
         configuration.key = request.json['key']
