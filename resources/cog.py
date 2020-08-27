@@ -1,6 +1,8 @@
 from flask import request
 from flask_restx import Resource, Namespace, marshal_with, fields
 from models.cog import Cog, db
+from models.configuration import Configuration
+from .configuration import model as configModel
 
 api = Namespace('cog')
 
@@ -19,6 +21,7 @@ class CogListResource(Resource):
         return all_cogs
 
     @api.marshal_with(model)
+    @api.doc(body = model)
     def post(self):
         name = request.json['name']
         description = request.json['description']
@@ -39,6 +42,7 @@ class CogResource(Resource):
         return cog
 
     @api.marshal_with(model)
+    @api.doc(body = model)
     def put(self, id):
         cog = Cog.query.get(id)
         cog.name = request.json['name']
@@ -55,3 +59,11 @@ class CogResource(Resource):
         db.session.commit()
 
         return True
+
+
+@api.route('/<int:id>/configuration')
+class CogConfigurationResource(Resource):
+    @api.marshal_with(configModel)
+    def get(self, id):
+        configuration = db.session.query(Configuration).filter(Configuration.cog_id == id).all()
+        return configuration
