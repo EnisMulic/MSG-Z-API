@@ -1,6 +1,7 @@
 from flask import Flask
 from database import db
 
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 class Configuration(db.Model):
   __tablename__ = 'configurations'
@@ -17,3 +18,9 @@ class Configuration(db.Model):
     self.key = key
     self.value = value
     self.cog_id = cog_id
+
+class ConfigurationSchema(SQLAlchemyAutoSchema):
+  class Meta:
+    model = Configuration
+    load_instance = True
+    transient = True

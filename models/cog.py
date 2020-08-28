@@ -1,6 +1,8 @@
 from flask import Flask
 from database import db
 
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+
 
 class Cog(db.Model):
   __tablename__ = 'cogs'
@@ -13,3 +15,11 @@ class Cog(db.Model):
   def __init__(self, name, description):
     self.name = name
     self.description = description
+
+
+class CogSchema(SQLAlchemyAutoSchema):
+  class Meta:
+    model = Cog
+    load_instance = True
+    transient = True
+

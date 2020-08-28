@@ -1,69 +1,70 @@
 from flask import request
 from flask_restx import Resource, Namespace, marshal_with, fields
-from models.cog import Cog, db
+
+from models.cog import Cog, db, CogSchema
 from models.configuration import Configuration
 from .configuration import model as configModel
 
-api = Namespace('cog')
-
-model = api.model('Cog', {
-    "id": fields.Integer(required = True),
-    "name": fields.String(required = True),
-    "description": fields.String(required = True),
-})
+from requests.cog_request import CogUpsertRequest
 
 
-@api.route('/')
+ns = Namespace('cog')
+
+# model = ns.model('Cog', {
+#     "id": fields.Integer(required = True),
+#     "name": fields.String(required = True),
+#     "description": fields.String(required = True),
+# })
+
+cogUpsertRequest = ns.model('CogUpsertRequest', CogUpsertRequest)
+
+cog_schema = CogSchema()
+cogs_schema = CogSchema(many = True)
+
+
+@ns.route('/')
 class CogListResource(Resource):
-    @api.marshal_with(model)
     def get(self):
-        all_cogs = Cog.query.all()
-        return all_cogs
+        entitys = Cog.query.all()
+        result = cogs_schema.dump(entitys)
+        return result
 
-    @api.marshal_with(model)
-    @api.doc(body = model)
+    @ns.doc(body = cogUpsertRequest)
     def post(self):
-        name = request.json['name']
-        description = request.json['description']
+        entity = cog_schema.load(request.json)
 
-        new_cog = Cog(name, description)
-
-        db.session.add(new_cog)
+        db.session.add(entity)
         db.session.commit()
 
-        return new_cog
+        return cog_schema.dump(entity)
 
 
-@api.route('/<int:id>')
+@ns.route('/<int:id>')
 class CogResource(Resource):
-    @api.marshal_with(model)
     def get(self, id):
-        cog = Cog.query.get(id)
-        return cog
+        entity = Cog.query.get(id)
+        return cog_schema.dump(entity)
 
-    @api.marshal_with(model)
-    @api.doc(body = model)
+    @ns.doc(body = cogUpsertRequest)
     def put(self, id):
-        cog = Cog.query.get(id)
-        cog.name = request.json['name']
-        cog.description = request.json['description']
+        cog = cog_schema.load(request.json, instance = Cog.query.get(id), partial = True)
 
         db.session.commit()
 
-        return cog
+        return cog_schema.dump(cog)
 
     def delete(self, id):
-        cog = Cog.query.get(id)
+        entity = Cog.query.get(id)
 
-        db.session.delete(cog)
+        db.session.delete(entity)
         db.session.commit()
 
         return True
 
 
-@api.route('/<int:id>/configuration')
+@ns.route('/<int:id>/configuration')
 class CogConfigurationResource(Resource):
-    @api.marshal_with(configModel)
+    @ns.marshal_with(configModel)
     def get(self, id):
         configuration = db.session.query(Configuration).filter(Configuration.cog_id == id).all()
         return configuration
