@@ -1,11 +1,12 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields, marshal_with
-from models.configuration import Configuration, db
 
+from models.configuration import Configuration, db, ConfigurationSchema
+from requests.configuration_request import ConfigurationUpsertRequest
 
-api = Namespace('configuration')
+ns = Namespace('configuration')
 
-model = api.model('Configuration', {
+model = ns.model('Configuration', {
     "id": fields.Integer(required = True),
     "key": fields.String(required = True),
     "value": fields.String(required = True),
@@ -13,51 +14,46 @@ model = api.model('Configuration', {
 })
 
 
-@api.route("/")
+configurationUpsertRequest = ns.model('ConfigurationUpsertRequest', ConfigurationUpsertRequest)
+
+
+configuration_schema = ConfigurationSchema()
+configurations_schema = ConfigurationSchema(many = True)
+
+
+@ns.route("/")
 class ConfigurationListResource(Resource):
-    @api.marshal_with(model)
     def get(self):
-        all_configurations = Configuration.query.all()
-        return all_configurations
+        entitys = Configuration.query.all()
+        return configurations_schema.dump(entitys)
 
-    @api.marshal_with(model)
-    @api.doc(body = model)
+    @ns.doc(body = configurationUpsertRequest)
     def post(self):
-        key = request.json['key']
-        value = request.json['value']
-        cog_id = request.json['cog_id']
+        entity = configuration_schema.load(request.json)
 
-        new_configuration = Configuration(key, value, cog_id)
-
-        db.session.add(new_configuration)
+        db.session.add(entity)
         db.session.commit()
 
-        return new_configuration
+        return configuration_schema.dump(entity)
 
-@api.route("/<int:id>")
+@ns.route("/<int:id>")
 class ConfigurationResource(Resource):
-    @api.marshal_with(model)
-    @api.doc(model = model)
     def get(self, id):
-        configuration = Configuration.query.get(id)
-        return configuration
+        entity = Configuration.query.get(id)
+        return configuration_schema.dump(entity)
 
-    @api.marshal_with(model)
-    @api.doc(body = model)
+    @ns.doc(body = configurationUpsertRequest)
     def put(self, id):
-        configuration = Configuration.query.get(id)
-        configuration.key = request.json['key']
-        configuration.value = request.json['value']
-        configuration.cog_id = request.json['cog_id']
+        configuration = configuration_schema.load(request.json, instance = Configuration.query.get(id), partial = True)
 
         db.session.commit()
 
-        return configuration
+        return configuration_schema.dump(configuration)
 
     def delete(self, id):
-        configuration = Configuration.query.get(id)
+        entity = Configuration.query.get(id)
 
-        db.session.delete(configuration)
+        db.session.delete(entity)
         db.session.commit()
 
         return True
