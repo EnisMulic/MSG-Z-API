@@ -6,14 +6,6 @@ from requests.configuration_request import ConfigurationUpsertRequest
 
 ns = Namespace('configuration')
 
-model = ns.model('Configuration', {
-    "id": fields.Integer(required = True),
-    "key": fields.String(required = True),
-    "value": fields.String(required = True),
-    "cog_id": fields.Integer(required = True)
-})
-
-
 configurationUpsertRequest = ns.model('ConfigurationUpsertRequest', ConfigurationUpsertRequest)
 
 
@@ -49,7 +41,7 @@ class ConfigurationResource(Resource):
         db.session.commit()
 
         return configuration_schema.dump(configuration)
-
+    
     def delete(self, id):
         entity = Configuration.query.get(id)
 
