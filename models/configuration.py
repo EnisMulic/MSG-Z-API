@@ -24,3 +24,4 @@ class ConfigurationSchema(SQLAlchemyAutoSchema):
     model = Configuration
     load_instance = True
     transient = True
+    include_fk = True
