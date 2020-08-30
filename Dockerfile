@@ -1,12 +1,3 @@
-# FROM python:3.8
-
-# WORKDIR /app
-# COPY . .
-
-# RUN pip install pipenv
-# RUN pipenv install --deploy --ignore-pipfile
-# RUN pipenv run python migrate.py db upgrade
-
 FROM python:3.8
 
 RUN pip3 install pipenv
