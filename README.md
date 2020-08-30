@@ -14,6 +14,10 @@
 
 `pipenv shell `
 
+### Install dependencies 
+
+`pipenv install`
+
 ### Create the migration folder
 
 `python migrate.py db init`
