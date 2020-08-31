@@ -30,4 +30,4 @@
 
 ### Start the application
 
-`python app.py` or `flask app`
+`python app.py`
