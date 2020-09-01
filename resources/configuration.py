@@ -42,10 +42,14 @@ class ConfigurationResource(Resource):
 
         return configuration_schema.dump(configuration)
     
+    @ns.response(200, "Success")
+    @ns.response(204, "No Content")
     def delete(self, id):
         entity = Configuration.query.get(id)
 
-        db.session.delete(entity)
-        db.session.commit()
+        if entity != None:
+            db.session.delete(entity)
+            db.session.commit()
 
-        return True
+            return {"status": "success"}, 200
+        return {"status": "no content"}, 204

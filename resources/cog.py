@@ -47,14 +47,19 @@ class CogResource(Resource):
         db.session.commit()
 
         return cog_schema.dump(cog)
-
+    
+    @ns.response(200, "Success")
+    @ns.response(204, "No Content")
     def delete(self, id):
         entity = Cog.query.get(id)
 
-        db.session.delete(entity)
-        db.session.commit()
+        if entity != None:
+            db.session.delete(entity)
+            db.session.commit()
 
-        return True
+            return {"status": "success"}, 200
+        return {"status": "no content"}, 204
+        
 
 
 @ns.route('/<int:id>/configuration')
