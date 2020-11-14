@@ -2,11 +2,8 @@ from flask import request
 from flask_restx import Resource, Namespace, marshal_with, fields
 
 from models.cog import Cog, db, CogSchema
-from models.configuration import Configuration, ConfigurationSchema
-
 from requests.cog_request import CogUpsertRequest
 
-from utils import json_converter
 
 ns = Namespace('cog')
 
@@ -14,7 +11,6 @@ cogUpsertRequest = ns.model('CogUpsertRequest', CogUpsertRequest)
 
 cog_schema = CogSchema()
 cogs_schema = CogSchema(many = True)
-config_schema = ConfigurationSchema(many = True)
 
 
 @ns.route('/')
@@ -60,10 +56,3 @@ class CogResource(Resource):
             return {"status": "success"}, 200
         return {"status": "no content"}, 204
         
-
-
-@ns.route('/<int:id>/configuration')
-class CogConfigurationResource(Resource):
-    def get(self, id):
-        entitys = db.session.query(Configuration).filter(Configuration.cog_id == id).all()
-        return json_converter.jsonListToJson(config_schema.dump(entitys), 'key', 'value')
