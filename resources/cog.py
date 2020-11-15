@@ -1,7 +1,6 @@
-from flask import request, jsonify
-from flask_restx import Resource, Namespace, marshal_with, fields
+from flask import request
+from flask_restx import Resource, Namespace, fields
 
-from requests.cog_request import CogUpsertRequest
 from database import cog as cog_repo
 
 from bson import json_util
@@ -12,7 +11,9 @@ from pymongo import errors
 
 ns = Namespace('cog')
 
-cogUpsertRequest = ns.model('CogUpsertRequest', CogUpsertRequest)
+cogUpsertRequest = ns.model('CogUpsertRequest', {
+    "name": fields.String(required = True)
+})
 
 
 
