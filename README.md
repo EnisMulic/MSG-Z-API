@@ -25,19 +25,6 @@ pipenv shell
 pipenv install
 ```
 
-### Create the migration folder
-
-```
-python migrate.py db init
-```
-
-### Making changes to the entity models or adding new ones
-
-```
-python migrate.py db migrate
-python migrate.py db upgrade 
-```
-
 ### Start the application
 
 ```

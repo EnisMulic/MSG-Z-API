@@ -1,2 +1,0 @@
-SQLALCHEMY_TRACK_MODIFICATIONS = True
-SQLALCHEMY_DATABASE_URI = 'sqlite:///mzg_z_config.sqlite'
