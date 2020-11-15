@@ -1,13 +1,12 @@
 from flask import request
 from flask_restx import Resource, Namespace, fields
 
-from database import cog as cog_repo
+from database.cog import CogRepository
 
 from bson import json_util
 import json
 
 from pymongo import errors
-
 
 ns = Namespace('cog')
 
@@ -16,12 +15,15 @@ cogUpsertRequest = ns.model('CogUpsertRequest', {
 })
 
 
-
 @ns.route('/')
-class CogListResource(Resource):
+class CogList(Resource):
+    def __init__(self, api = None, *args, **kwargs):
+        self.api = api
+        self.repository = CogRepository()
+
     @ns.response(200, "Success")
     def get(self):
-        entitys = cog_repo.get_all()
+        entitys = self.repository.get_all()
         result = json.loads(json_util.dumps(entitys))
         return result
 
@@ -30,7 +32,7 @@ class CogListResource(Resource):
     @ns.response(409, "Conflict")
     def post(self):
         try:
-            entity = cog_repo.create(request.json)
+            entity = self.repository.create(request.json)
             
             return json.loads(json_util.dumps(entity))
         except errors.DuplicateKeyError as err:
@@ -41,17 +43,21 @@ class CogListResource(Resource):
 
 
 @ns.route('/<name>')
-class CogResource(Resource):
+class Cog(Resource):
+    def __init__(self, api = None, *args, **kwargs):
+        self.api = api
+        self.repository = CogRepository()
+
     @ns.response(200, "Success")
     def get(self, name):
-        entity = cog_repo.get(name)
+        entity = self.repository.get(name)
         return json.loads(json_util.dumps(entity))
 
     @ns.doc(body = cogUpsertRequest)
     @ns.response(200, "Success")
     @ns.response(404, "Not Found")
     def put(self, name):
-        entity = cog_repo.update(name, request.json)
+        entity = self.repository.update(name, request.json)
         
         if entity != None:
             return json.loads(json_util.dumps(entity))
@@ -60,7 +66,7 @@ class CogResource(Resource):
     @ns.response(200, "Success")
     @ns.response(204, "No Content")
     def delete(self, name):
-        result = cog_repo.delete(name)
+        result = self.repository.delete(name)
 
         if result == True:
             return {"status": "success"}, 200
