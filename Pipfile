@@ -7,11 +7,9 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-flask-sqlalchemy = "*"
 flask-script = "*"
-flask-migrate = "*"
 flask-restx = "*"
-marshmallow-sqlalchemy = "*"
+pymongo = "*"
 
 [requires]
 python_version = "3.8"
