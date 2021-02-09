@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    container_name: "mongo"
+    restart: always
+    ports:
+      - 27017:27017
+    networks: 
+      - pynet
+
+  api:
+    build: .
+    container_name: msg_z_config
+    ports:
+      - 8000:8000
+    networks: 
+      - pynet
+
+networks:
+  pynet:
+    driver: bridge

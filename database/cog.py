@@ -3,7 +3,7 @@ from .context import db
 
 class CogRepository:
     def __init__(self):
-        self.dbSet = db.configs
+        self.dbSet = db["configs"]
 
     def get_all(self):
         return [doc for doc in self.dbSet.find()]

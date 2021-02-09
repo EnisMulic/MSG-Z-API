@@ -12,4 +12,4 @@ def create_app(config_filename):
 
 if __name__ == "__main__":
     app = create_app("config")
-    app.run(port = "8000")
+    app.run(host="0.0.0.0")
